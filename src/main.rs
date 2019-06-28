@@ -52,9 +52,11 @@ fn main() {
     let arguments = Arguments::new(&args).unwrap_or_else(
         |err| {
             if err.contains("help") {
-
+                process::exit(0);
             } else {
-               
+                eprintln!("{} error leyendo argumentos {}", program, err);
+                process::exit(0);
             }
-        });
+        }
+    );
 }
