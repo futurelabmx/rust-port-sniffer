@@ -48,4 +48,12 @@ impl Arguments {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
+    let arguments = Arguments::new(&args).unwrap_or_else(
+        |err| {
+            if err.contains("help") {
+
+            } else {
+
+            }
+        });
 }
