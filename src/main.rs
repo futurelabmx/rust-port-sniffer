@@ -5,6 +5,7 @@ use std::process;
 use std::sync::mpsc::{Sender, channel};
 use std::thread;
 
+const MAX:u16 = 65535;
 
 struct Arguments {
     flag: String,
@@ -47,6 +48,10 @@ impl Arguments {
                 }
         }
     }
+}
+
+fn scan(tx: Sender<u16>, start_port: u16, addr: IpAddr, num_threads: u16) {
+
 }
 
 fn main() {
