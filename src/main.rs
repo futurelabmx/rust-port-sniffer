@@ -62,4 +62,14 @@ fn main() {
             }
         }
     );
+
+    let num_threads = arguments.threads;
+    let (tx, rx) = channel();
+    for i in 0..num_threads {
+        let tx = tx.clone();
+
+        thread::spawn(move || {
+            scan(tx, i, arguments.ipaddr, num_threads);
+        });
+    }
 }
