@@ -25,7 +25,9 @@ impl Arguments {
                 args.len() == 2 {
                 println!("Uso: -j para asignar hilos de ejecución
                 \r\n      -h o --help para mostrar este mensaje");
-            }
+                } else if flag.contains("-h") || flag.contains("--help") {
+                    return Err("Demasiados argumentos");
+                }
         }
     }
 }
