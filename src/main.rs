@@ -1,6 +1,7 @@
 use std::env;
 use std::net::IpAddr;
 use std::str::FromStr;
+use std::process;
 
 struct Arguments {
     flag: String,
@@ -53,7 +54,7 @@ fn main() {
             if err.contains("help") {
 
             } else {
-
+               
             }
         });
 }
