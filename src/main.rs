@@ -52,13 +52,20 @@ impl Arguments {
 }
 
 fn scan(tx: Sender<u16>, start_port: u16, addr: IpAddr, num_threads: u16) {
-    let mut port: u16 = start_port +1;
+    let mut port: u16 = start_port + 1;
     loop {
-        match TcpStream::connect((addr, port ) {
+        match TcpStream::connect((addr, port)) {
             Ok(_) => {
-                print!(".")
+                print!(".");
+                io::stdout().flush().unwrap();
             }
-        });
+            Err(_) => {}
+        }
+
+        if (MAX - port) <= num_threads {
+            break;
+        }
+        port += num_threads;
     }
 }
 
@@ -80,7 +87,6 @@ fn main() {
     let (tx, rx) = channel();
     for i in 0..num_threads {
         let tx = tx.clone();
-
         thread::spawn(move || {
             scan(tx, i, arguments.ipaddr, num_threads);
         });
