@@ -6,7 +6,7 @@ use std::process;
 use std::sync::mpsc::{Sender, channel};
 use std::thread;
 
-const MAX:u16 = 65535;
+const MAX: u16 = 65535;
 
 struct Arguments {
     flag: String,
@@ -14,14 +14,14 @@ struct Arguments {
     threads: u16,
 }
 
+
 impl Arguments {
     fn new(args: &[String]) -> Result<Arguments, &'static str> {
         if args.len() < 2 {
-            return Err("No hay suficientes argumentos");
+            return Err("No hay argumentos suficientes");
         } else if args.len() > 4 {
             return Err("Demasiados argumentos");
         }
-
         let f = args[1].clone();
         if let Ok(ipaddr) = IpAddr::from_str(&f) {
             return Ok(Arguments {flag: String::from(""), ipaddr, threads: 4});
@@ -29,25 +29,25 @@ impl Arguments {
             let flag = args[1].clone();
             if flag.contains("-h") || flag.contains("-help") && args.len() == 2 {
                 println!("Uso: -j para el número de hilos
-                \n\r       -h o -help para mostrar este mensaje");
+                \n\r       -h ó -help para mostrar este mensaje");
                 return Err("help");
             } else if flag.contains("-h") || flag.contains("-help") {
-                return Err("Demasiados argumentos.");
+                return Err("Demasados argumentos");
             } else if flag.contains("-j") {
-                    let ipaddr = match IpAddr::from_str(&args[3]) {
-                        Ok(s) => s,
-                        Err(_) => return Err("No es una dirección IP válida")
-                    };
-
-                    let threads = match args[2].parse::<u16>() {
-                        Ok(s) => s,
-                        Err(_) => return Err("Fallo al leer el número de hilos")
-                    };
-                    return Ok(Arguments{threads, flag, ipaddr});
-                } else {
-                    return Err("Error de Sintáxis");
-                }
+                let ipaddr = match IpAddr::from_str(&args[3]) {
+                    Ok(s) => s,
+                    Err(_) => return Err("Error de IP")
+                };
+                let threads = match args[2].parse::<u16>(){
+                    Ok(s) => s,
+                    Err(_) => return Err("Fallo al leer el número de hilos.")
+                };
+                return Ok(Arguments{threads, flag, ipaddr});
+            } else {
+                return Err("Error de sintáxis.");
+            }
         }
+
     }
 }
 
@@ -58,8 +58,10 @@ fn scan(tx: Sender<u16>, start_port: u16, addr: IpAddr, num_threads: u16) {
             Ok(_) => {
                 print!(".");
                 io::stdout().flush().unwrap();
+                tx.send(port).unwrap();
             }
             Err(_) => {}
+
         }
 
         if (MAX - port) <= num_threads {
@@ -69,6 +71,7 @@ fn scan(tx: Sender<u16>, start_port: u16, addr: IpAddr, num_threads: u16) {
     }
 }
 
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
@@ -77,7 +80,7 @@ fn main() {
             if err.contains("help") {
                 process::exit(0);
             } else {
-                eprintln!("{} error leyendo argumentos {}", program, err);
+                eprintln!("{} Error leyendo argumento: {}", program, err);
                 process::exit(0);
             }
         }
@@ -88,6 +91,7 @@ fn main() {
     let (tx, rx) = channel();
     for i in 0..num_threads {
         let tx = tx.clone();
+
         thread::spawn(move || {
             scan(tx, i, addr, num_threads);
         });
@@ -100,8 +104,8 @@ fn main() {
     }
 
     println!("");
-    out.sort(); // Lazy Sort
+    out.sort();
     for v in out {
-        println!("El puerto {} se encuentra abierto", v);
+        println!("{} es un puerto abierto.", v);
     }
 }
