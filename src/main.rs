@@ -27,13 +27,13 @@ impl Arguments {
             return Ok(Arguments {flag: String::from(""), ipaddr, threads: 4});
         } else {
             let flag = args[1].clone();
-            if flag.contains("-h") || flag.contains("--help") &&
-                args.len() == 2 {
-                println!("Uso: -j para asignar hilos de ejecución
-                \r\n      -h o --help para mostrar este mensaje");
-                } else if flag.contains("-h") || flag.contains("--help") {
-                    return Err("Demasiados argumentos");
-                } else if flag.contains("-j") {
+            if flag.contains("-h") || flag.contains("-help") && args.len() == 2 {
+                println!("Uso: -j para el número de hilos
+                \n\r       -h o -help para mostrar este mensaje");
+                return Err("help");
+            } else if flag.contains("-h") || flag.contains("-help") {
+                return Err("Demasiados argumentos.");
+            } else if flag.contains("-j") {
                     let ipaddr = match IpAddr::from_str(&args[3]) {
                         Ok(s) => s,
                         Err(_) => return Err("No es una dirección IP válida")
