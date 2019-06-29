@@ -92,4 +92,16 @@ fn main() {
             scan(tx, i, addr, num_threads);
         });
     }
+
+    let mut out = vec![];
+    drop(tx);
+    for p in rx {
+        out.push(p);
+    }
+
+    println!("");
+    out.sort(); // Lazy Sort
+    for v in out {
+        println!("El puerto {} se encuentra abierto", v);
+    }
 }
